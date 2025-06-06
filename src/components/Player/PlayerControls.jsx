@@ -31,3 +31,7 @@ const PlayerControls = ({ isPlaying, togglePlayPause, isShuffling, setIsShufflin
 );
 
 export default PlayerControls;
+
+
+
+
