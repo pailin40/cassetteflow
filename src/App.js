@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+// don't have theme context
+import React from 'react';
+import AppLayout from './components/Layout/AppLayout';
+import { PlayerProvider } from './context/PlayerContext';
+import { LibraryProvider } from './context/LibraryContext';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <PlayerProvider>
+      <LibraryProvider>
+        <AppLayout />
+      </LibraryProvider>
+    </PlayerProvider>
   );
 }
 
 export default App;
+
+
+
+// //when have theme context
+// import React from 'react';
+// import AppLayout from './components/Layout/AppLayout';
+// import { PlayerProvider } from './context/PlayerContext';
+// import { LibraryProvider } from './context/LibraryContext';
+// import { ThemeProvider } from './context/ThemeContext';
+
+// function App() {
+//   return (
+//     <ThemeProvider>
+//       <PlayerProvider>
+//         <LibraryProvider>
+//           <AppLayout />
+//         </LibraryProvider>
+//       </PlayerProvider>
+//     </ThemeProvider>
+//   );
+// }
+
+// export default App;
