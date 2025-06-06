@@ -18,7 +18,7 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
           <div className="absolute top-2 left-2 w-1 h-1 bg-orange-400 rounded-full"></div>
           <div className="absolute top-2 right-2 w-1 h-1 bg-orange-400 rounded-full"></div>
         </div>
-        CassetteFy
+        CassetteFlow
       </div>
       
       {/* Main Navigation */}
