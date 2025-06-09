@@ -1,8 +1,12 @@
+// File: Sidebar.jsx
 import React from 'react';
 import { Home, Search, Library, Heart } from 'lucide-react';
-import { playlists } from '../../data/playlists';
+import { useLibrary } from '../../context/LibraryContext';
+
 
 const Sidebar = ({ currentPage, setCurrentPage }) => {
+  const { playlists, createPlaylist } = useLibrary();
+
   const navigationItems = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'search', icon: Search, label: 'Search' },
@@ -21,8 +25,8 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
         </div>
         CassetteFlow
       </div>
-      
-      {/* Main Navigation */}
+
+      {/* Navigation */}
       <div className="space-y-2">
         {navigationItems.map(({ id, icon: Icon, label }) => (
           <button
@@ -40,22 +44,36 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
         ))}
       </div>
 
-      {/* Playlists */}
+      {/* Dynamic Playlists */}
       <div className="mt-8">
         <h3 className="text-gray-400 text-sm font-semibold mb-4 uppercase tracking-wider">
           Playlists
         </h3>
-        <div className="space-y-2">
+
+        {/* Create Playlist Button */}
+        <button
+          onClick={() => {
+            const name = prompt('Enter playlist name');
+            if (name) createPlaylist(name);
+          }}
+          className="w-full text-left text-orange-400 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold"
+        >
+          + Create Playlist
+        </button>
+
+        {/* Playlist List */}
+        <div className="space-y-2 mt-2">
           {playlists.map(playlist => (
-            <button
+            <div
               key={playlist.id}
-              className="w-full text-left text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+              className="w-full text-left text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors cursor-default"
             >
               {playlist.name}
-            </button>
+            </div>
           ))}
         </div>
       </div>
+
     </nav>
   );
 };
