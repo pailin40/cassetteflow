@@ -6,7 +6,7 @@ import { Search, Heart, Play } from 'lucide-react';
 
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { likedSongs, toggleLike } = useLibrary();
+  const { toggleLike, isLiked } = useLibrary();
   const { playSong } = usePlayer();
 
   const filteredSongs = songs.filter(song =>
@@ -52,10 +52,10 @@ const SearchPage = () => {
                     toggleLike(song);
                   }}
                   className={`p-2 rounded-full transition-colors ${
-                    likedSongs.has(song.id) ? 'text-red-500' : 'text-gray-400 hover:text-white'
+                    isLiked(song.id) ? 'text-red-500' : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  <Heart size={16} fill={likedSongs.has(song.id) ? 'currentColor' : 'none'} />
+                  <Heart size={16} fill={isLiked(song.id) ? 'currentColor' : 'none'} />
                 </button>
                 <span className="text-gray-400 text-sm">{song.duration}</span>
                 <button

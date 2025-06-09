@@ -1,52 +1,47 @@
 import React, { createContext, useContext, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const LibraryContext = createContext();
 
-export const useLibrary = () => {
-  const context = useContext(LibraryContext);
-  if (!context) {
-    throw new Error('useLibrary must be used within a LibraryProvider');
-  }
-  return context;
-};
-
 export const LibraryProvider = ({ children }) => {
   const [likedSongs, setLikedSongs] = useState([]);
-  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
 
   const toggleLike = (song) => {
-    const isAlreadyLiked = likedSongs.some(s => s.id === song.id);
-
-    let updated;
-    if (isAlreadyLiked) {
-      updated = likedSongs.filter(s => s.id !== song.id);
-      toast.success(`Removed "${song.title}" from favorites`);
+    const isCurrentlyLiked = likedSongs.some(liked => liked.id === song.id);
+    
+    if (isCurrentlyLiked) {
+      // Remove from favorites
+      setLikedSongs(prev => prev.filter(liked => liked.id !== song.id));
+      toast.success(`Removed "${song.title}" from favorites`, {
+        duration: 2000,
+        style: {
+          background: '#1f2937',
+          color: '#fff',
+          border: '1px solid #374151'
+        }
+      });
     } else {
-      updated = [song, ...likedSongs];
-      toast.success(`Added "${song.title}" to favorites`);
+      // Add to favorites
+      setLikedSongs(prev => [...prev, song]);
+      toast.success(`Added "${song.title}" to favorites`, {
+        duration: 2000,
+        style: {
+          background: '#1f2937',
+          color: '#fff',
+          border: '1px solid #374151'
+        }
+      });
     }
-
-    setLikedSongs(updated);
   };
 
   const isLiked = (songId) => {
-    return likedSongs.some(s => s.id === songId);
-  };
-
-  const addToRecentlyPlayed = (song) => {
-    setRecentlyPlayed(prev => {
-      const filtered = prev.filter(s => s.id !== song.id);
-      return [song, ...filtered].slice(0, 10);
-    });
+    return likedSongs.some(song => song.id === songId);
   };
 
   const value = {
     likedSongs,
-    recentlyPlayed,
     toggleLike,
-    isLiked,
-    addToRecentlyPlayed
+    isLiked
   };
 
   return (
@@ -54,4 +49,12 @@ export const LibraryProvider = ({ children }) => {
       {children}
     </LibraryContext.Provider>
   );
+};
+
+export const useLibrary = () => {
+  const context = useContext(LibraryContext);
+  if (!context) {
+    throw new Error('useLibrary must be used within a LibraryProvider');
+  }
+  return context;
 };

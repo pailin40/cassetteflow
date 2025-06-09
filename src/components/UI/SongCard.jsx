@@ -16,7 +16,10 @@ const SongCard = ({ song, showDuration = false, layout = 'grid' }) => {
           <p className="text-gray-400 text-sm truncate">{song.artist}</p>
         </div>
         <button
-          onClick={() => toggleLike(song.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleLike(song);
+          }}
           className={`p-2 rounded-full transition-colors ${
             isLiked(song.id) ? 'text-red-500' : 'text-gray-400 hover:text-white'
           }`}
