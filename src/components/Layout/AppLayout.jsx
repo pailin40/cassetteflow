@@ -5,6 +5,7 @@ import HomePage from '../Pages/HomePage';
 import SearchPage from '../Pages/SearchPage';
 import LibraryPage from '../Pages/LibraryPage';
 import Header from './Header';
+import FavoritesPage from '../Pages/FavoritesPage';
 
 const AppLayout = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -14,6 +15,7 @@ const AppLayout = () => {
       case 'home': return <HomePage />;
       case 'search': return <SearchPage />;
       case 'library': return <LibraryPage />;
+      case 'favorites': return <FavoritesPage />;
       default: return <HomePage />;
     }
   };

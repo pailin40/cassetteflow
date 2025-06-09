@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { songs } from '../../data/songs';
+import { useLibrary } from '../../context/LibraryContext';
+import { usePlayer } from '../../context/PlayerContext';
 import { Search, Heart, Play } from 'lucide-react';
 
-const SearchPage = ({ 
-  searchTerm, 
-  setSearchTerm, 
-  filteredSongs, 
-  likedSongs, 
-  toggleLike, 
-  playSong 
-}) => {
+const SearchPage = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const { likedSongs, toggleLike } = useLibrary();
+  const { playSong } = usePlayer();
+
+  const filteredSongs = songs.filter(song =>
+    song.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    song.artist.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <div>
@@ -30,14 +35,22 @@ const SearchPage = ({
           <h3 className="text-xl font-bold text-white mb-4">Search Results</h3>
           <div className="space-y-2">
             {filteredSongs.map(song => (
-              <div key={song.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-800/50 transition-colors group">
+              <div
+                key={song.id}
+                onClick={() => playSong(song)}
+                className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-800/50 transition-colors group cursor-pointer"
+              >
                 <img src={song.cover} alt={song.title} className="w-12 h-12 rounded-lg" />
                 <div className="flex-1 min-w-0">
                   <h4 className="text-white font-medium truncate">{song.title}</h4>
                   <p className="text-gray-400 text-sm truncate">{song.artist}</p>
                 </div>
+                {/* Heart button (click won't bubble up) */}
                 <button
-                  onClick={() => toggleLike(song.id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent triggering play
+                    toggleLike(song);
+                  }}
                   className={`p-2 rounded-full transition-colors ${
                     likedSongs.has(song.id) ? 'text-red-500' : 'text-gray-400 hover:text-white'
                   }`}
@@ -46,7 +59,10 @@ const SearchPage = ({
                 </button>
                 <span className="text-gray-400 text-sm">{song.duration}</span>
                 <button
-                  onClick={() => playSong(song)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent triggering play
+                    playSong(song);
+                  }}
                   className="p-2 bg-orange-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all"
                 >
                   <Play size={16} />
@@ -60,7 +76,10 @@ const SearchPage = ({
           <h3 className="text-xl font-bold text-white mb-4">Browse All</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {['Pop', 'Rock', 'Hip Hop', 'Electronic', 'Jazz', 'Classical', 'Country', 'R&B'].map(genre => (
-              <div key={genre} className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg p-6 cursor-pointer hover:scale-105 transition-transform">
+              <div
+                key={genre}
+                className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg p-6 cursor-pointer hover:scale-105 transition-transform"
+              >
                 <h4 className="text-white font-bold text-lg">{genre}</h4>
               </div>
             ))}
@@ -72,12 +91,3 @@ const SearchPage = ({
 };
 
 export default SearchPage;
-
-
-
-
-// import React from 'react';
-
-// const SearchPage = () => <div className="text-white">🔍 Search Page</div>;
-
-// export default SearchPage;

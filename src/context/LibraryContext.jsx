@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 const LibraryContext = createContext();
 
@@ -11,27 +12,32 @@ export const useLibrary = () => {
 };
 
 export const LibraryProvider = ({ children }) => {
-  const [likedSongs, setLikedSongs] = useState(new Set());
+  const [likedSongs, setLikedSongs] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
 
-  const toggleLike = (songId) => {
-    const newLiked = new Set(likedSongs);
-    if (newLiked.has(songId)) {
-      newLiked.delete(songId);
+  const toggleLike = (song) => {
+    const isAlreadyLiked = likedSongs.some(s => s.id === song.id);
+
+    let updated;
+    if (isAlreadyLiked) {
+      updated = likedSongs.filter(s => s.id !== song.id);
+      toast.success(`Removed "${song.title}" from favorites`);
     } else {
-      newLiked.add(songId);
+      updated = [song, ...likedSongs];
+      toast.success(`Added "${song.title}" to favorites`);
     }
-    setLikedSongs(newLiked);
+
+    setLikedSongs(updated);
   };
 
   const isLiked = (songId) => {
-    return likedSongs.has(songId);
+    return likedSongs.some(s => s.id === songId);
   };
 
   const addToRecentlyPlayed = (song) => {
     setRecentlyPlayed(prev => {
       const filtered = prev.filter(s => s.id !== song.id);
-      return [song, ...filtered].slice(0, 10); // Keep only last 10
+      return [song, ...filtered].slice(0, 10);
     });
   };
 

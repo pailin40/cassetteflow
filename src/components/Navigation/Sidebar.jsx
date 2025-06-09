@@ -1,11 +1,12 @@
 import React from 'react';
-import { Home, Search, Library } from 'lucide-react';
+import { Home, Search, Library, Heart } from 'lucide-react';
 import { playlists } from '../../data/playlists';
 
 const Sidebar = ({ currentPage, setCurrentPage }) => {
   const navigationItems = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'search', icon: Search, label: 'Search' },
+    { id: 'favorites', icon: Heart, label: 'Favorite' },
     { id: 'library', icon: Library, label: 'Your Library' }
   ];
 

@@ -41,21 +41,3 @@ export default HomePage;
 
 
 
-
-// import React from 'react';
-
-// const HomePage = () => <div className="text-white">🏠 Home Page</div>;
-
-// export default HomePage;
-
-
-
-
-// import React from 'react';
-
-// const HomePage = () => {
-//   console.log('🔥 HomePage is rendering');
-//   return <div className="text-yellow-300 text-3xl font-bold">🏠 Home Page Content Loaded!</div>;
-// };
-
-// export default HomePage;
