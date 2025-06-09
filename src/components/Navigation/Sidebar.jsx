@@ -1,21 +1,14 @@
-// File: Sidebar.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Home, Search, Library, Heart } from 'lucide-react';
 import { useLibrary } from '../../context/LibraryContext';
-
+import CreatePlaylistModal from '../UI/CreatePlaylistModal';
 
 const Sidebar = ({ currentPage, setCurrentPage }) => {
   const { playlists, createPlaylist } = useLibrary();
-
-  const navigationItems = [
-    { id: 'home', icon: Home, label: 'Home' },
-    { id: 'search', icon: Search, label: 'Search' },
-    { id: 'favorites', icon: Heart, label: 'Favorite' },
-    { id: 'library', icon: Library, label: 'Your Library' }
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <nav className="bg-gradient-to-b from-gray-900 to-black p-6 min-h-screen w-64 border-r border-gray-800">
+    <nav className="bg-gradient-to-b from-gray-900 to-black p-6 w-64 border-r border-gray-800 overflow-y-auto max-h-screen">
       {/* Logo */}
       <div className="text-2xl font-bold text-orange-400 mb-8 flex items-center">
         <div className="w-8 h-6 bg-orange-400 rounded-sm mr-2 relative">
@@ -28,19 +21,21 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
 
       {/* Navigation */}
       <div className="space-y-2">
-        {navigationItems.map(({ id, icon: Icon, label }) => (
-          <button
-            key={id}
-            onClick={() => setCurrentPage(id)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-              currentPage === id 
-                ? 'bg-orange-600 text-white' 
-                : 'text-gray-300 hover:text-white hover:bg-gray-800'
-            }`}
-          >
-            <Icon size={20} />
-            <span className="font-medium">{label}</span>
-          </button>
+        {[{ id: 'home', icon: Home, label: 'Home' },
+          { id: 'search', icon: Search, label: 'Search' },
+          { id: 'favorites', icon: Heart, label: 'Favorite' },
+          { id: 'library', icon: Library, label: 'Your Library' }]
+          .map(({ id, icon: Icon, label }) => (
+            <button
+              key={id}
+              onClick={() => setCurrentPage(id)}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                currentPage === id ? 'bg-orange-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'
+              }`}
+            >
+              <Icon size={20} />
+              <span className="font-medium">{label}</span>
+            </button>
         ))}
       </div>
 
@@ -50,19 +45,8 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
           Playlists
         </h3>
 
-        {/* Create Playlist Button */}
-        <button
-          onClick={() => {
-            const name = prompt('Enter playlist name');
-            if (name) createPlaylist(name);
-          }}
-          className="w-full text-left text-orange-400 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold"
-        >
-          + Create Playlist
-        </button>
-
         {/* Playlist List */}
-        <div className="space-y-2 mt-2">
+        <div className="space-y-1">
           {playlists.map(playlist => (
             <div
               key={playlist.id}
@@ -72,8 +56,21 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
             </div>
           ))}
         </div>
-      </div>
 
+        {/* Create Playlist Button */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="mt-2 w-full text-left text-orange-400 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold"
+        >
+          + Create Playlist
+        </button>
+
+        <CreatePlaylistModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onCreate={createPlaylist}
+        />
+      </div>
     </nav>
   );
 };
