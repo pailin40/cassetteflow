@@ -3,7 +3,7 @@ import { Home, Search, Library, Heart } from 'lucide-react';
 import { useLibrary } from '../../context/LibraryContext';
 import CreatePlaylistModal from '../UI/CreatePlaylistModal';
 
-const Sidebar = ({ currentPage, setCurrentPage }) => {
+const Sidebar = ({ currentPage, setCurrentPage, onSelectPlaylist }) => {
   const { playlists, createPlaylist } = useLibrary();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -48,12 +48,13 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
         {/* Playlist List */}
         <div className="space-y-1">
           {playlists.map(playlist => (
-            <div
+            <button
               key={playlist.id}
-              className="w-full text-left text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors cursor-default"
+              onClick={() => onSelectPlaylist(playlist.id)}
+              className="w-full text-left text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
             >
               {playlist.name}
-            </div>
+            </button>
           ))}
         </div>
 
