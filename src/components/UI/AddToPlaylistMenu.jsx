@@ -63,7 +63,6 @@ const AddToPlaylistMenu = ({ song }) => {
       </div>
       )}
 
-
       {/* Modal */}
       <CreatePlaylistModal
         isOpen={modalOpen}
