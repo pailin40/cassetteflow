@@ -1,74 +1,110 @@
-import React, { useEffect, useRef, useState } from 'react';
+// src/components/UI/AddToPlaylistMenu.jsx
+import React, { useState, useRef } from 'react'; // Removed useEffect
 import { MoreHorizontal } from 'lucide-react';
 import { useLibrary } from '../../context/LibraryContext';
-import CreatePlaylistModal from './CreatePlaylistModal';
+import useOutsideClick from '../../hooks/useOutsideClick';
 
 const AddToPlaylistMenu = ({ song }) => {
-  const { playlists, addToPlaylist, createPlaylist } = useLibrary();
-  const [open, setOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const { createPlaylist, addToPlaylist, playlists: userPlaylists } = useLibrary();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [newPlaylistName, setNewPlaylistName] = useState('');
+  const [showNewPlaylistInput, setShowNewPlaylistInput] = useState(false);
+
   const menuRef = useRef(null);
 
-  const handleAdd = (playlistId) => {
-    if (playlistId && song) {
-      addToPlaylist(playlistId, song);
+  useOutsideClick(menuRef, () => {
+    if (isDropdownOpen) {
+      setIsDropdownOpen(false);
+      setNewPlaylistName('');
+      setShowNewPlaylistInput(false);
     }
-    setOpen(false);
+  });
+
+  const handleToggleDropdown = (e) => {
+    e.stopPropagation();
+    setIsDropdownOpen(prevIsDropdownOpen => {
+      if (prevIsDropdownOpen) {
+        setNewPlaylistName('');
+        setShowNewPlaylistInput(false);
+      }
+      return !prevIsDropdownOpen;
+    });
   };
 
-  // 🔐 Close menu on outside click
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const handleCreateNewPlaylist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (newPlaylistName.trim()) {
+      createPlaylist(newPlaylistName.trim(), song);
+      setNewPlaylistName('');
+      setShowNewPlaylistInput(false);
+      setIsDropdownOpen(false);
+    }
+  };
+
+  const handleAddSongToExistingPlaylist = (playlistId, e) => {
+    e.stopPropagation();
+    addToPlaylist(playlistId, song); // Corrected function name
+    setIsDropdownOpen(false);
+  };
+
+  const availablePlaylists = userPlaylists || [];
 
   return (
-    <div className="relative" ref={menuRef}>
-      {/* Trigger */}
+    <div className="relative z-10" ref={menuRef}>
       <button
-        onClick={() => setOpen((prev) => !prev)}
-        className="p-2 text-gray-400 hover:text-white"
+        onClick={handleToggleDropdown}
+        className="p-2 text-gray-400 hover:text-white rounded-full transition-colors"
+        title="More options"
       >
-        <MoreHorizontal size={18} />
+        <MoreHorizontal size={16} />
       </button>
 
-      {/* Dropdown Menu */}
-      {open && (
-      <div className="absolute right-0 mt-2 w-52 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50">
-          <ul className="py-2">
-          {playlists.map((pl) => (
-              <li
-              key={pl.id}
-              onClick={() => handleAdd(pl.id)}
-              className="px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 cursor-pointer"
-              >
-              {pl.name}
-              </li>
-          ))}
-          <li
-              onClick={() => {
-              setOpen(false);
-              setModalOpen(true);
-              }}
-              className="px-4 py-2 text-sm text-orange-400 hover:bg-gray-700 cursor-pointer font-semibold"
-          >
+      {isDropdownOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-md shadow-lg overflow-hidden">
+          <ul className="py-1 text-sm text-gray-200">
+            {availablePlaylists.length > 0 ? (
+              availablePlaylists.map((playlist) => (
+                <li
+                  key={playlist.id}
+                  className="px-4 py-2 hover:bg-gray-600 cursor-pointer truncate"
+                  onClick={(e) => handleAddSongToExistingPlaylist(playlist.id, e)}
+                >
+                  {playlist.name}
+                </li>
+              ))
+            ) : (
+              <li className="px-4 py-2 text-gray-400">No playlists yet.</li>
+            )}
+            <li
+              className="px-4 py-2 hover:bg-gray-600 cursor-pointer text-orange-400 font-medium"
+              onClick={(e) => { e.stopPropagation(); setShowNewPlaylistInput(true); }}
+            >
               + Create New Playlist
-          </li>
+            </li>
           </ul>
-      </div>
-      )}
 
-      {/* Modal */}
-      <CreatePlaylistModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onCreate={createPlaylist}
-      />
+          {showNewPlaylistInput && (
+            <form onSubmit={handleCreateNewPlaylist} className="p-2 border-t border-gray-600">
+              <input
+                type="text"
+                value={newPlaylistName}
+                onChange={(e) => setNewPlaylistName(e.target.value)}
+                placeholder="New playlist name"
+                className="w-full bg-gray-800 text-white text-sm rounded-md px-3 py-1 mb-2 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                autoFocus
+                onClick={(e) => e.stopPropagation()}
+              />
+              <button
+                type="submit"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm py-1 rounded-md"
+              >
+                Create
+              </button>
+            </form>
+          )}
+        </div>
+      )}
     </div>
   );
 };

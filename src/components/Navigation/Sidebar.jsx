@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Search, Library, Heart, Menu } from 'lucide-react';
+import { Home, Library, Heart, Menu } from 'lucide-react';
 import { useLibrary } from '../../context/LibraryContext';
 import CreatePlaylistModal from '../UI/CreatePlaylistModal';
 
@@ -24,7 +24,6 @@ const Sidebar = ({ currentPage, setCurrentPage, onSelectPlaylist }) => {
       {/* Navigation (always visible) */}
       <div className="space-y-2">
         {[{ id: 'home', icon: Home, label: 'Home' },
-          { id: 'search', icon: Search, label: 'Search' }, // Corrected label based on image
           { id: 'favorites', icon: Heart, label: 'Favorite' }, // Assuming this should be 'Favorite' based on icon
           { id: 'library', icon: Library, label: 'Your Library' }] // Assuming 'Your Library' for Library icon
           .map(({ id, icon: Icon, label }) => (
