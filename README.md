@@ -1,4 +1,4 @@
-# CassetteFy
+# CassetteFLOW
 A retro-inspired music streaming web app with a cassette player UI, built with React and Tailwind CSS.
 Has a modern music streaming interface wrapped in a nostalgic cassette tape aesthetic. Browse songs, manage playlists, and favorite tracks.
 
